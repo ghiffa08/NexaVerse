@@ -50,7 +50,7 @@
             'relative': !scrolled
         }"
         x-data="{ isOpen: false }"
-        class="transition-all px-4 md:px-0 py-6 duration-300 container mx-auto lg:flex lg:justify-between lg:items-center"
+        class="transition-all py-6 duration-300 container mx-auto lg:flex lg:justify-between lg:items-center"
       >
         <div class="flex items-center justify-between">
           <a
@@ -185,7 +185,7 @@
         <div class="container mx-auto px-4 xl:px-0">
           <div class="md:flex items-center gap-8 justify-center">
             <div class="w-full md:w-1/2 text-center md:text-left">
-              <h1
+              <!-- <h1
                 class="text-2xl mb-5 sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl text-white font-black leading-7 md:leading-10 font-orbitron"
               >
                 Explore in the
@@ -194,6 +194,39 @@
                 >
                   metaverse
                 </span>
+                one pixel at a time
+              </h1> -->
+
+              <h1
+                x-data="{ 
+    fullText: 'metaverse', 
+    displayText: '', 
+    isTyping: true,
+    startTyping() {
+      let chars = this.fullText.split('');
+      let index = 0;
+      const typeNext = () => {
+        if (index < chars.length) {
+          this.displayText += chars[index];
+          index++;
+          setTimeout(typeNext, 150);
+        } else {
+          this.isTyping = false;
+        }
+      };
+      typeNext();
+    }
+  }"
+                x-init="startTyping()"
+                class="text-2xl mb-5 sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl text-white font-black leading-7 md:leading-10 font-orbitron"
+              >
+                Explore in the
+                <span
+                  class="bg-gradient-to-r from-[#25DDDD] to-[#CF32D2] text-transparent bg-clip-text"
+                  x-text="displayText"
+                >
+                </span>
+                <span x-show="isTyping" class="animate-blink">|</span>
                 one pixel at a time
               </h1>
 
@@ -664,5 +697,20 @@
         }));
       });
     </script>
+
+    <style>
+      @keyframes blink {
+        0%,
+        100% {
+          opacity: 0;
+        }
+        50% {
+          opacity: 1;
+        }
+      }
+      .animate-blink {
+        animation: blink 0.7s infinite;
+      }
+    </style>
   </body>
 </html>
