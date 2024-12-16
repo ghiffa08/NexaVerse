@@ -18,12 +18,29 @@
       rel="stylesheet"
     />
   </head>
+  Navbar with Scroll-Based Section Activation
+
   <body
     x-data="{ 
         scrolled: false, 
+        activeSection: 'hero',
         checkScroll() { 
-            this.scrolled = window.scrollY > 50 
-        } 
+            this.scrolled = window.scrollY > 50;
+            this.updateActiveSection();
+        },
+        updateActiveSection() {
+            const sections = ['hero', 'about', 'features', 'contact'];
+            for (let section of sections) {
+                const el = document.getElementById(section);
+                if (el) {
+                    const rect = el.getBoundingClientRect();
+                    if (rect.top <= window.innerHeight / 2 && rect.bottom >= window.innerHeight / 2) {
+                        this.activeSection = section;
+                        break;
+                    }
+                }
+            }
+        }
     }"
     @scroll.window="checkScroll()"
     class="bg-[#010101] dark:bg-gray-900"
@@ -34,7 +51,7 @@
             'fixed top-0 left-0 right-0 z-50 p-6 bg-white/70 rounded-b-lg dark:bg-gray-900/70 backdrop-blur-md shadow-md': scrolled,
             'relative': !scrolled
         }"
-        x-data="{ isOpen: false, active: 'hero' }"
+        x-data="{ isOpen: false }"
         class="transition-all px-4 md:px-0 py-6 duration-300 container mx-auto lg:flex lg:justify-between lg:items-center"
       >
         <div class="flex items-center justify-between">
@@ -108,52 +125,48 @@
           >
             <a
               href="#hero"
-              @click="active = 'hero'"
               :class="{
-                'text-[#CF32D2] font-semibold dark:text-blue-400': active === 'hero',
-                'text-white dark:text-gray-200 hover:text-[#CF32D2] dark:hover:text-blue-400': active !== 'hero' && !scrolled,
-                'text-[#CF32D2]': active === 'hero' && scrolled,
-                'text-white md:text-black hover:text-[#CF32D2]': active !== 'hero' && scrolled
-              }"
+                        'text-[#CF32D2] font-semibold dark:text-blue-400': activeSection === 'hero',
+                        'text-white dark:text-gray-200 hover:text-[#CF32D2] dark:hover:text-blue-400': activeSection !== 'hero' && !scrolled,
+                        'text-[#CF32D2]': activeSection === 'hero' && scrolled,
+                        'text-white md:text-black hover:text-[#CF32D2]': activeSection !== 'hero' && scrolled
+                    }"
               class="transition-colors duration-300"
             >
               Home
             </a>
             <a
               href="#about"
-              @click="active = 'about'"
               :class="{
-                'text-[#CF32D2] font-semibold dark:text-blue-400': active === 'about',
-                'text-white dark:text-gray-200 hover:text-[#CF32D2] dark:hover:text-blue-400': active !== 'about' && !scrolled,
-                'text-[#CF32D2]': active === 'about' && scrolled,
-                'text-white md:text-black hover:text-[#CF32D2]': active !== 'about' && scrolled
-              }"
+                        'text-[#CF32D2] font-semibold dark:text-blue-400': activeSection === 'about',
+                        'text-white dark:text-gray-200 hover:text-[#CF32D2] dark:hover:text-blue-400': activeSection !== 'about' && !scrolled,
+                        'text-[#CF32D2]': activeSection === 'about' && scrolled,
+                        'text-white md:text-black hover:text-[#CF32D2]': activeSection !== 'about' && scrolled
+                    }"
               class="transition-colors duration-300"
             >
               About
             </a>
             <a
               href="#features"
-              @click="active = 'features'"
               :class="{
-                'text-[#CF32D2] font-semibold dark:text-blue-400': active === 'features',
-                'text-white dark:text-gray-200 hover:text-[#CF32D2] dark:hover:text-blue-400': active !== 'features' && !scrolled,
-                'text-[#CF32D2]': active === 'features' && scrolled,
-                'text-white md:text-black hover:text-[#CF32D2]': active !== 'features' && scrolled
-              }"
+                        'text-[#CF32D2] font-semibold dark:text-blue-400': activeSection === 'features',
+                        'text-white dark:text-gray-200 hover:text-[#CF32D2] dark:hover:text-blue-400': activeSection !== 'features' && !scrolled,
+                        'text-[#CF32D2]': activeSection === 'features' && scrolled,
+                        'text-white md:text-black hover:text-[#CF32D2]': activeSection !== 'features' && scrolled
+                    }"
               class="transition-colors duration-300"
             >
               Pricing
             </a>
             <a
               href="#contact"
-              @click="active = 'contact'"
               :class="{
-                'text-[#CF32D2] font-semibold dark:text-blue-400': active === 'contact',
-                'text-white dark:text-gray-200 hover:text-[#CF32D2] dark:hover:text-blue-400': active !== 'contact' && !scrolled,
-                'text-[#CF32D2]': active === 'contact' && scrolled,
-                'text-white md:text-black hover:text-[#CF32D2]': active !== 'contact' && scrolled
-              }"
+                        'text-[#CF32D2] font-semibold dark:text-blue-400': activeSection === 'contact',
+                        'text-white dark:text-gray-200 hover:text-[#CF32D2] dark:hover:text-blue-400': activeSection !== 'contact' && !scrolled,
+                        'text-[#CF32D2]': activeSection === 'contact' && scrolled,
+                        'text-white md:text-black hover:text-[#CF32D2]': activeSection !== 'contact' && scrolled
+                    }"
               class="transition-colors duration-300"
             >
               Contact
@@ -170,7 +183,7 @@
       </nav>
 
       <!-- Centered Hero Section -->
-      <section class="flex-grow flex items-center justify-center">
+      <section id="hero" class="flex-grow flex items-center justify-center">
         <div class="container mx-auto px-4 xl:px-0">
           <div class="md:flex items-center gap-8 justify-center">
             <div class="w-full md:w-1/2 text-center md:text-left">
