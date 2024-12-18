@@ -9,7 +9,7 @@ document.addEventListener("alpine:init", () => {
       { section: "about", label: "About" },
       { section: "explore", label: "Explore" },
       { section: "blog", label: "Blog" },
-      { section: "priceing", label: "Priceing" },
+      { section: "priceing", label: "Pricing" },
       { section: "contact", label: "Contact" },
     ],
     init() {
