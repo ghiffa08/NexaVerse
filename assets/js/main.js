@@ -7,7 +7,7 @@ document.addEventListener("alpine:init", () => {
     navItems: [
       { section: "hero", label: "Home" },
       { section: "about", label: "About" },
-      { section: "features", label: "Features" },
+      { section: "explore", label: "Explore" },
       { section: "blog", label: "Blog" },
       { section: "priceing", label: "Priceing" },
       { section: "contact", label: "Contact" },
