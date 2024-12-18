@@ -63,6 +63,11 @@ html {
   scroll-behavior: smooth;
 }
 
+section {
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
+
 .font-orbitron {
   font-family: "Orbitron", sans-serif;
 }
