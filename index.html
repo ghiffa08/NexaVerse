@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>MetaV - Build, Review, and Ship</title>
+    <title>ThreeVerse | Build, Review, and Ship</title>
     <script
       src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"
       defer
@@ -43,15 +43,21 @@
     @scroll.window="checkScroll()"
     class="bg-[#010101] dark:bg-gray-900"
   >
-    <div id="hero" class="relative w-full min-h-screen flex flex-col">
+    <section
+      x-data="heroSection()"
+      x-init="init()"
+      @scroll.window="checkScroll()"
+      id="hero"
+      class="relative w-full min-h-screen flex flex-col"
+    >
       <nav
         :class="{
-            'fixed top-0 left-0 right-0 z-50 p-6 bg-white/70 rounded-b-lg dark:bg-gray-900/70 backdrop-blur-md shadow-md': scrolled,
-            'relative': !scrolled
-        }"
-        x-data="{ isOpen: false }"
+      'fixed top-0 left-0 right-0 z-50 p-6 bg-white/60 rounded-b-lg dark:bg-gray-900/70 backdrop-blur-md shadow-md': scrolled,
+      'relative': !scrolled
+    }"
         class="transition-all py-6 duration-300 container mx-auto lg:flex lg:justify-between lg:items-center"
       >
+        <!-- Navigation Logo -->
         <div class="flex items-center justify-between">
           <a
             href="#hero"
@@ -67,17 +73,17 @@
             />
           </a>
 
-          <!-- Mobile menu button -->
+          <!-- Mobile Menu Toggle -->
           <div class="flex lg:hidden">
             <button
               x-cloak
-              @click="isOpen = !isOpen"
+              @click="isMenuOpen = !isMenuOpen"
               type="button"
               class="text-gray-500 dark:text-gray-200 hover:text-gray-600 dark:hover:text-gray-400 focus:outline-none"
               aria-label="Toggle menu"
             >
               <svg
-                x-show="!isOpen"
+                x-show="!isMenuOpen"
                 xmlns="http://www.w3.org/2000/svg"
                 class="w-6 h-6"
                 fill="none"
@@ -93,11 +99,11 @@
               </svg>
 
               <svg
-                x-show="isOpen"
+                x-show="isMenuOpen"
                 xmlns="http://www.w3.org/2000/svg"
                 class="w-6 h-6"
                 fill="none"
-                viewBox="0 24 24"
+                viewBox="0 0 24 24"
                 stroke="currentColor"
                 stroke-width="2"
               >
@@ -115,60 +121,25 @@
         <div
           x-cloak
           x-transition
-          :class="[isOpen ? 'translate-x-0 opacity-100' : 'opacity-0 -translate-x-full']"
+          :class="[isMenuOpen ? 'translate-x-0 opacity-100' : 'opacity-0 -translate-x-full']"
           class="absolute inset-x-0 z-20 w-full px-6 py-4 transition-all duration-300 ease-in-out bg-black shadow-md lg:bg-transparent lg:shadow-none dark:bg-gray-900 lg:mt-0 lg:p-0 lg:top-0 lg:relative lg:w-auto lg:opacity-100 lg:translate-x-0 lg:flex lg:items-center"
         >
           <div
             class="flex flex-col space-y-4 lg:flex-row lg:space-y-0 lg:space-x-8"
           >
-            <a
-              href="#hero"
-              :class="{
-                        'text-[#CF32D2] font-semibold dark:text-blue-400': activeSection === 'hero',
-                        'text-white dark:text-gray-200 hover:text-[#CF32D2] dark:hover:text-blue-400': activeSection !== 'hero' && !scrolled,
-                        'text-[#CF32D2]': activeSection === 'hero' && scrolled,
-                        'text-white md:text-black hover:text-[#CF32D2]': activeSection !== 'hero' && scrolled
-                    }"
-              class="transition-colors duration-300"
-            >
-              Home
-            </a>
-            <a
-              href="#about"
-              :class="{
-                        'text-[#CF32D2] font-semibold dark:text-blue-400': activeSection === 'about',
-                        'text-white dark:text-gray-200 hover:text-[#CF32D2] dark:hover:text-blue-400': activeSection !== 'about' && !scrolled,
-                        'text-[#CF32D2]': activeSection === 'about' && scrolled,
-                        'text-white md:text-black hover:text-[#CF32D2]': activeSection !== 'about' && scrolled
-                    }"
-              class="transition-colors duration-300"
-            >
-              About
-            </a>
-            <a
-              href="#features"
-              :class="{
-                        'text-[#CF32D2] font-semibold dark:text-blue-400': activeSection === 'features',
-                        'text-white dark:text-gray-200 hover:text-[#CF32D2] dark:hover:text-blue-400': activeSection !== 'features' && !scrolled,
-                        'text-[#CF32D2]': activeSection === 'features' && scrolled,
-                        'text-white md:text-black hover:text-[#CF32D2]': activeSection !== 'features' && scrolled
-                    }"
-              class="transition-colors duration-300"
-            >
-              Pricing
-            </a>
-            <a
-              href="#contact"
-              :class="{
-                        'text-[#CF32D2] font-semibold dark:text-blue-400': activeSection === 'contact',
-                        'text-white dark:text-gray-200 hover:text-[#CF32D2] dark:hover:text-blue-400': activeSection !== 'contact' && !scrolled,
-                        'text-[#CF32D2]': activeSection === 'contact' && scrolled,
-                        'text-white md:text-black hover:text-[#CF32D2]': activeSection !== 'contact' && scrolled
-                    }"
-              class="transition-colors duration-300"
-            >
-              Contact
-            </a>
+            <template x-for="item in navItems" :key="item.section">
+              <a
+                :href="`#${item.section}`"
+                :class="{
+              'text-[#CF32D2] font-semibold dark:text-blue-400': activeSection === item.section,
+              'text-white dark:text-gray-200 hover:text-[#CF32D2] dark:hover:text-blue-400': activeSection !== item.section && !scrolled,
+              'text-[#CF32D2]': activeSection === item.section && scrolled,
+              'text-white md:text-black hover:text-[#CF32D2]': activeSection !== item.section && scrolled
+            }"
+                class="transition-colors duration-300"
+                x-text="item.label"
+              ></a>
+            </template>
           </div>
 
           <a
@@ -180,43 +151,13 @@
         </div>
       </nav>
 
-      <!-- Centered Hero Section -->
-      <section id="hero" class="flex-grow flex items-center justify-center">
+      <!-- Typing Hero Content -->
+      <div class="flex-grow flex items-center justify-center">
         <div class="container mx-auto px-4 xl:px-0">
           <div class="md:flex items-center gap-8 justify-center">
             <div class="w-full md:w-1/2 text-center md:text-left">
-              <!-- <h1
-                class="text-2xl mb-5 sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl text-white font-black leading-7 md:leading-10 font-orbitron"
-              >
-                Explore in the
-                <span
-                  class="bg-gradient-to-r from-[#25DDDD] to-[#CF32D2] text-transparent bg-clip-text"
-                >
-                  metaverse
-                </span>
-                one pixel at a time
-              </h1> -->
-
               <h1
-                x-data="{ 
-    fullText: 'metaverse', 
-    displayText: '', 
-    isTyping: true,
-    startTyping() {
-      let chars = this.fullText.split('');
-      let index = 0;
-      const typeNext = () => {
-        if (index < chars.length) {
-          this.displayText += chars[index];
-          index++;
-          setTimeout(typeNext, 150);
-        } else {
-          this.isTyping = false;
-        }
-      };
-      typeNext();
-    }
-  }"
+                x-data="typingText('metaverse', 150)"
                 x-init="startTyping()"
                 class="text-2xl mb-5 sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl text-white font-black leading-7 md:leading-10 font-orbitron"
               >
@@ -229,7 +170,6 @@
                 <span x-show="isTyping" class="animate-blink">|</span>
                 one pixel at a time
               </h1>
-
               <p
                 class="text-base lg:text-lg text-white mb-10 max-w-prose mx-auto md:mx-0"
               >
@@ -256,43 +196,47 @@
               <img
                 src="assets/images/hero/hero.svg"
                 alt="Product Screenshot"
+                width="500"
+                height="300"
                 class="w-full max-w-3xl object-cover rounded-lg"
               />
             </div>
           </div>
         </div>
-      </section>
-    </div>
+      </div>
+    </section>
 
-    <div
+    <section
       id="about"
       class="2xl:container 2xl:mx-auto lg:py-16 lg:px-20 md:py-12 md:px-6 py-9 px-4"
     >
-      <p
-        class="font-normal text-lg leading-3 text-white hover:text-indigo-800 cursor-pointer pb-2"
-      >
-        About Us
-      </p>
+      <p class="font-normal text-lg leading-3 text-white pb-2">About</p>
       <div class="flex lg:flex-row flex-col lg:gap-8 sm:gap-10 gap-12">
         <div class="w-full lg:w-6/12">
           <h2
             class="w-full font-bold lg:text-4xl text-3xl lg:leading-10 text-white leading-9"
           >
-            Welcome to the Future of Connection and Immersion
+            Welcome to the world of Metaverse
           </h2>
-          <p class="font-normal text-base leading-6 text-white mt-6">
-            In the ever-evolving digital landscape, the Metaverse represents a
-            bold new frontier—a universe where reality and virtual worlds
-            seamlessly intertwine. Our platform is dedicated to bringing this
-            vision to life by creating an immersive space where you can explore,
-            connect, and innovate without limits. We believe that the metaverse
-            is more than just technology—it's a revolution in how we experience
-            the world, redefining the boundaries of creativity, collaboration,
-            and community. Whether you're here to socialize, build, or learn,
-            our goal is to provide tools and experiences that empower you to
-            shape your own reality. Join us as we embark on this journey to
-            create a limitless virtual universe, where the only boundaries are
-            those of your imagination.
+          <p
+            class="font-normal text-base leading-6 text-white mt-6 text-justify"
+          >
+            Metaverse a place where imagination becomes reality one pixel at a
+            time. Here, we present a virtual experience that not only redefines
+            the way we interact with the digital world, but also changes the way
+            we see and feel about life itself. The Metaverse is a virtual space
+            filled with unlimited potential.
+          </p>
+          <p
+            class="font-normal text-base leading-6 text-white mt-6 text-justify"
+          >
+            Using Virtual Reality (VR) technology, we take you on an immersive
+            and interactive journey, where physical and spatial boundaries are
+            no longer an obstacle. Every experience in Metaverse is designed to
+            bring you closer to the digital world of innovation, creativity and
+            collaboration. We believe that the future of the digital world lies
+            in the ability to interact in a customizable space, where each user
+            can shape and explore the world according to their vision.
           </p>
         </div>
         <div class="w-full lg:w-6/12">
@@ -355,7 +299,7 @@
           <p
             class="font-semibold lg:text-2xl text-xl lg:leading-6 leading-5 text-white mt-6"
           >
-            50M montly enrichments
+            58 million daily active users
           </p>
           <p class="font-normal text-base leading-6 text-white mt-6">
             It is a long established fact that a reader will be distracted by
@@ -407,7 +351,7 @@
             Our Mission
           </h2>
           <p
-            class="font-normal text-base leading-6 text-white mt-6 w-full lg:w-10/12 xl:w-9/12"
+            class="font-normal text-base text-justify leading-6 text-white mt-6 w-full lg:w-10/12 xl:w-9/12"
           >
             It is a long established fact that a reader will be distracted by
             the readable content of a page when looking at its layout. The point
@@ -418,7 +362,7 @@
             observed; which is apparent from
           </p>
           <p
-            class="font-normal text-base leading-6 text-white w-full lg:w-10/12 xl:w-9/12 mt-10"
+            class="font-normal text-base text-justify leading-6 text-white w-full lg:w-10/12 xl:w-9/12 mt-10"
           >
             It is a long established fact that a reader will be distracted by
             the readable content of a page when looking at its layout. The point
@@ -433,20 +377,19 @@
           <div
             class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 lg:gap-12 gap-10"
           >
-            <!-- Team Card -->
+            <!-- Board Card -->
             <div class="flex p-4 shadow-md">
               <div class="mr-6">
                 <img
-                  class="mr-6"
-                  src="https://tuk-cdn.s3.amazonaws.com/can-uploader/about-us-3-svg4.svg"
-                  alt="team card"
+                  src="https://tuk-cdn.s3.amazonaws.com/can-uploader/about-us-3-svg5.svg"
+                  alt="board card"
                 />
               </div>
               <div class>
                 <p
-                  class="font-semibold lg:text-2xl text-xl lg:leading-6 leading-5 text-gray-800 dark:text-white"
+                  class="font-semibold lg:text-2xl text-xl lg:leading-6 leading-5 text-white"
                 >
-                  Team
+                  Board
                 </p>
                 <p class="mt-2 font-normal text-base leading-6 text-white">
                   It is a long established fact that a reader will be distracted
@@ -454,7 +397,6 @@
                 </p>
               </div>
             </div>
-
             <!-- Board Card -->
             <div class="flex p-4 shadow-md">
               <div class="mr-6">
@@ -499,18 +441,258 @@
           </div>
         </div>
       </div>
-    </div>
 
-    <section id="features" class="">
+      <div>
+        <div class="container px-6 py-10 mx-auto">
+          <h1
+            class="text-2xl font-semibold text-center capitalize lg:text-4xl text-white"
+          >
+            Our Team
+          </h1>
+
+          <p class="max-w-2xl mx-auto my-6 text-center text-white">
+            This website was developed by a dedicated team with the goal of
+            educating people about the latest advancements in technology, with a
+            special focus on the transformative world of the metaverse. Meet the
+            team behind this initiative!
+          </p>
+
+          <div
+            class="grid grid-cols-1 gap-8 mt-8 xl:mt-16 md:grid-cols-2 xl:grid-cols-3"
+          >
+            <div
+              class="flex flex-col items-center p-8 transition-colors duration-300 transform border cursor-pointer rounded-xl hover:border-transparent group hover:bg-white/60 dark:border-gray-700 dark:hover:border-transparent"
+            >
+              <img
+                class="object-cover w-32 h-32 rounded-full ring-4 ring-gray-300"
+                src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=880&q=80"
+                alt=""
+              />
+
+              <h1
+                class="mt-4 text-2xl font-semibold capitalize text-white group-hover:text-black"
+              >
+                Aam Setiana
+              </h1>
+
+              <p
+                class="mt-2 text-gray-500 capitalize text-white group-hover:text-black"
+              >
+                design director
+              </p>
+
+              <div class="flex mt-3 -mx-2">
+                <a
+                  href="#"
+                  class="mx-2 text-gray-600 dark:text-gray-300 hover:text-gray-500 dark:hover:text-gray-300 group-hover:text-white"
+                  aria-label="Reddit"
+                >
+                  <svg
+                    class="w-6 h-6 fill-current"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C21.9939 17.5203 17.5203 21.9939 12 22ZM6.807 10.543C6.20862 10.5433 5.67102 10.9088 5.45054 11.465C5.23006 12.0213 5.37133 12.6558 5.807 13.066C5.92217 13.1751 6.05463 13.2643 6.199 13.33C6.18644 13.4761 6.18644 13.6229 6.199 13.769C6.199 16.009 8.814 17.831 12.028 17.831C15.242 17.831 17.858 16.009 17.858 13.769C17.8696 13.6229 17.8696 13.4761 17.858 13.33C18.4649 13.0351 18.786 12.3585 18.6305 11.7019C18.475 11.0453 17.8847 10.5844 17.21 10.593H17.157C16.7988 10.6062 16.458 10.7512 16.2 11C15.0625 10.2265 13.7252 9.79927 12.35 9.77L13 6.65L15.138 7.1C15.1931 7.60706 15.621 7.99141 16.131 7.992C16.1674 7.99196 16.2038 7.98995 16.24 7.986C16.7702 7.93278 17.1655 7.47314 17.1389 6.94094C17.1122 6.40873 16.6729 5.991 16.14 5.991C16.1022 5.99191 16.0645 5.99491 16.027 6C15.71 6.03367 15.4281 6.21641 15.268 6.492L12.82 6C12.7983 5.99535 12.7762 5.993 12.754 5.993C12.6094 5.99472 12.4851 6.09583 12.454 6.237L11.706 9.71C10.3138 9.7297 8.95795 10.157 7.806 10.939C7.53601 10.6839 7.17843 10.5422 6.807 10.543ZM12.18 16.524C12.124 16.524 12.067 16.524 12.011 16.524C11.955 16.524 11.898 16.524 11.842 16.524C11.0121 16.5208 10.2054 16.2497 9.542 15.751C9.49626 15.6958 9.47445 15.6246 9.4814 15.5533C9.48834 15.482 9.52348 15.4163 9.579 15.371C9.62737 15.3318 9.68771 15.3102 9.75 15.31C9.81233 15.31 9.87275 15.3315 9.921 15.371C10.4816 15.7818 11.159 16.0022 11.854 16C11.9027 16 11.9513 16 12 16C12.059 16 12.119 16 12.178 16C12.864 16.0011 13.5329 15.7863 14.09 15.386C14.1427 15.3322 14.2147 15.302 14.29 15.302C14.3653 15.302 14.4373 15.3322 14.49 15.386C14.5985 15.4981 14.5962 15.6767 14.485 15.786V15.746C13.8213 16.2481 13.0123 16.5208 12.18 16.523V16.524ZM14.307 14.08H14.291L14.299 14.041C13.8591 14.011 13.4994 13.6789 13.4343 13.2429C13.3691 12.8068 13.6162 12.3842 14.028 12.2269C14.4399 12.0697 14.9058 12.2202 15.1478 12.5887C15.3899 12.9572 15.3429 13.4445 15.035 13.76C14.856 13.9554 14.6059 14.0707 14.341 14.08H14.306H14.307ZM9.67 14C9.11772 14 8.67 13.5523 8.67 13C8.67 12.4477 9.11772 12 9.67 12C10.2223 12 10.67 12.4477 10.67 13C10.67 13.5523 10.2223 14 9.67 14Z"
+                    ></path>
+                  </svg>
+                </a>
+
+                <a
+                  href="#"
+                  class="mx-2 text-gray-600 dark:text-gray-300 hover:text-gray-500 dark:hover:text-gray-300 group-hover:text-white"
+                  aria-label="Facebook"
+                >
+                  <svg
+                    class="w-6 h-6 fill-current"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M2.00195 12.002C2.00312 16.9214 5.58036 21.1101 10.439 21.881V14.892H7.90195V12.002H10.442V9.80204C10.3284 8.75958 10.6845 7.72064 11.4136 6.96698C12.1427 6.21332 13.1693 5.82306 14.215 5.90204C14.9655 5.91417 15.7141 5.98101 16.455 6.10205V8.56104H15.191C14.7558 8.50405 14.3183 8.64777 14.0017 8.95171C13.6851 9.25566 13.5237 9.68693 13.563 10.124V12.002H16.334L15.891 14.893H13.563V21.881C18.8174 21.0506 22.502 16.2518 21.9475 10.9611C21.3929 5.67041 16.7932 1.73997 11.4808 2.01722C6.16831 2.29447 2.0028 6.68235 2.00195 12.002Z"
+                    ></path>
+                  </svg>
+                </a>
+
+                <a
+                  href="#"
+                  class="mx-2 text-gray-600 dark:text-gray-300 hover:text-gray-500 dark:hover:text-gray-300 group-hover:text-white"
+                  aria-label="Github"
+                >
+                  <svg
+                    class="w-6 h-6 fill-current"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M12.026 2C7.13295 1.99937 2.96183 5.54799 2.17842 10.3779C1.395 15.2079 4.23061 19.893 8.87302 21.439C9.37302 21.529 9.55202 21.222 9.55202 20.958C9.55202 20.721 9.54402 20.093 9.54102 19.258C6.76602 19.858 6.18002 17.92 6.18002 17.92C5.99733 17.317 5.60459 16.7993 5.07302 16.461C4.17302 15.842 5.14202 15.856 5.14202 15.856C5.78269 15.9438 6.34657 16.3235 6.66902 16.884C6.94195 17.3803 7.40177 17.747 7.94632 17.9026C8.49087 18.0583 9.07503 17.99 9.56902 17.713C9.61544 17.207 9.84055 16.7341 10.204 16.379C7.99002 16.128 5.66202 15.272 5.66202 11.449C5.64973 10.4602 6.01691 9.5043 6.68802 8.778C6.38437 7.91731 6.42013 6.97325 6.78802 6.138C6.78802 6.138 7.62502 5.869 9.53002 7.159C11.1639 6.71101 12.8882 6.71101 14.522 7.159C16.428 5.868 17.264 6.138 17.264 6.138C17.6336 6.97286 17.6694 7.91757 17.364 8.778C18.0376 9.50423 18.4045 10.4626 18.388 11.453C18.388 15.286 16.058 16.128 13.836 16.375C14.3153 16.8651 14.5612 17.5373 14.511 18.221C14.511 19.555 14.499 20.631 14.499 20.958C14.499 21.225 14.677 21.535 15.186 21.437C19.8265 19.8884 22.6591 15.203 21.874 10.3743C21.089 5.54565 16.9181 1.99888 12.026 2Z"
+                    ></path>
+                  </svg>
+                </a>
+              </div>
+            </div>
+
+            <div
+              class="flex flex-col items-center p-8 transition-colors duration-300 transform border cursor-pointer rounded-xl hover:border-transparent group hover:bg-white/60 dark:border-gray-700 dark:hover:border-transparent"
+            >
+              <img
+                class="object-cover w-32 h-32 rounded-full ring-4 ring-gray-300"
+                src="https://images.unsplash.com/photo-1531590878845-12627191e687?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=764&q=80"
+                alt=""
+              />
+
+              <h1
+                class="mt-4 text-2xl font-semibold capitalize text-white group-hover:text-black"
+              >
+                Desta Erlangga
+              </h1>
+
+              <p class="mt-2 text-white capitalize group-hover:text-black">
+                Lead Developer
+              </p>
+
+              <div class="flex mt-3 -mx-2">
+                <a
+                  href="#"
+                  class="mx-2 text-gray-600 dark:text-gray-300 hover:text-gray-500 dark:hover:text-gray-300 group-hover:text-white"
+                  aria-label="Reddit"
+                >
+                  <svg
+                    class="w-6 h-6 fill-current"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C21.9939 17.5203 17.5203 21.9939 12 22ZM6.807 10.543C6.20862 10.5433 5.67102 10.9088 5.45054 11.465C5.23006 12.0213 5.37133 12.6558 5.807 13.066C5.92217 13.1751 6.05463 13.2643 6.199 13.33C6.18644 13.4761 6.18644 13.6229 6.199 13.769C6.199 16.009 8.814 17.831 12.028 17.831C15.242 17.831 17.858 16.009 17.858 13.769C17.8696 13.6229 17.8696 13.4761 17.858 13.33C18.4649 13.0351 18.786 12.3585 18.6305 11.7019C18.475 11.0453 17.8847 10.5844 17.21 10.593H17.157C16.7988 10.6062 16.458 10.7512 16.2 11C15.0625 10.2265 13.7252 9.79927 12.35 9.77L13 6.65L15.138 7.1C15.1931 7.60706 15.621 7.99141 16.131 7.992C16.1674 7.99196 16.2038 7.98995 16.24 7.986C16.7702 7.93278 17.1655 7.47314 17.1389 6.94094C17.1122 6.40873 16.6729 5.991 16.14 5.991C16.1022 5.99191 16.0645 5.99491 16.027 6C15.71 6.03367 15.4281 6.21641 15.268 6.492L12.82 6C12.7983 5.99535 12.7762 5.993 12.754 5.993C12.6094 5.99472 12.4851 6.09583 12.454 6.237L11.706 9.71C10.3138 9.7297 8.95795 10.157 7.806 10.939C7.53601 10.6839 7.17843 10.5422 6.807 10.543ZM12.18 16.524C12.124 16.524 12.067 16.524 12.011 16.524C11.955 16.524 11.898 16.524 11.842 16.524C11.0121 16.5208 10.2054 16.2497 9.542 15.751C9.49626 15.6958 9.47445 15.6246 9.4814 15.5533C9.48834 15.482 9.52348 15.4163 9.579 15.371C9.62737 15.3318 9.68771 15.3102 9.75 15.31C9.81233 15.31 9.87275 15.3315 9.921 15.371C10.4816 15.7818 11.159 16.0022 11.854 16C11.9027 16 11.9513 16 12 16C12.059 16 12.119 16 12.178 16C12.864 16.0011 13.5329 15.7863 14.09 15.386C14.1427 15.3322 14.2147 15.302 14.29 15.302C14.3653 15.302 14.4373 15.3322 14.49 15.386C14.5985 15.4981 14.5962 15.6767 14.485 15.786V15.746C13.8213 16.2481 13.0123 16.5208 12.18 16.523V16.524ZM14.307 14.08H14.291L14.299 14.041C13.8591 14.011 13.4994 13.6789 13.4343 13.2429C13.3691 12.8068 13.6162 12.3842 14.028 12.2269C14.4399 12.0697 14.9058 12.2202 15.1478 12.5887C15.3899 12.9572 15.3429 13.4445 15.035 13.76C14.856 13.9554 14.6059 14.0707 14.341 14.08H14.306H14.307ZM9.67 14C9.11772 14 8.67 13.5523 8.67 13C8.67 12.4477 9.11772 12 9.67 12C10.2223 12 10.67 12.4477 10.67 13C10.67 13.5523 10.2223 14 9.67 14Z"
+                    ></path>
+                  </svg>
+                </a>
+
+                <a
+                  href="#"
+                  class="mx-2 text-gray-600 dark:text-gray-300 hover:text-gray-500 dark:hover:text-gray-300 group-hover:text-white"
+                  aria-label="Facebook"
+                >
+                  <svg
+                    class="w-6 h-6 fill-current"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M2.00195 12.002C2.00312 16.9214 5.58036 21.1101 10.439 21.881V14.892H7.90195V12.002H10.442V9.80204C10.3284 8.75958 10.6845 7.72064 11.4136 6.96698C12.1427 6.21332 13.1693 5.82306 14.215 5.90204C14.9655 5.91417 15.7141 5.98101 16.455 6.10205V8.56104H15.191C14.7558 8.50405 14.3183 8.64777 14.0017 8.95171C13.6851 9.25566 13.5237 9.68693 13.563 10.124V12.002H16.334L15.891 14.893H13.563V21.881C18.8174 21.0506 22.502 16.2518 21.9475 10.9611C21.3929 5.67041 16.7932 1.73997 11.4808 2.01722C6.16831 2.29447 2.0028 6.68235 2.00195 12.002Z"
+                    ></path>
+                  </svg>
+                </a>
+
+                <a
+                  href="#"
+                  class="mx-2 text-gray-600 dark:text-gray-300 hover:text-gray-500 dark:hover:text-gray-300 group-hover:text-white"
+                  aria-label="Github"
+                >
+                  <svg
+                    class="w-6 h-6 fill-current"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M12.026 2C7.13295 1.99937 2.96183 5.54799 2.17842 10.3779C1.395 15.2079 4.23061 19.893 8.87302 21.439C9.37302 21.529 9.55202 21.222 9.55202 20.958C9.55202 20.721 9.54402 20.093 9.54102 19.258C6.76602 19.858 6.18002 17.92 6.18002 17.92C5.99733 17.317 5.60459 16.7993 5.07302 16.461C4.17302 15.842 5.14202 15.856 5.14202 15.856C5.78269 15.9438 6.34657 16.3235 6.66902 16.884C6.94195 17.3803 7.40177 17.747 7.94632 17.9026C8.49087 18.0583 9.07503 17.99 9.56902 17.713C9.61544 17.207 9.84055 16.7341 10.204 16.379C7.99002 16.128 5.66202 15.272 5.66202 11.449C5.64973 10.4602 6.01691 9.5043 6.68802 8.778C6.38437 7.91731 6.42013 6.97325 6.78802 6.138C6.78802 6.138 7.62502 5.869 9.53002 7.159C11.1639 6.71101 12.8882 6.71101 14.522 7.159C16.428 5.868 17.264 6.138 17.264 6.138C17.6336 6.97286 17.6694 7.91757 17.364 8.778C18.0376 9.50423 18.4045 10.4626 18.388 11.453C18.388 15.286 16.058 16.128 13.836 16.375C14.3153 16.8651 14.5612 17.5373 14.511 18.221C14.511 19.555 14.499 20.631 14.499 20.958C14.499 21.225 14.677 21.535 15.186 21.437C19.8265 19.8884 22.6591 15.203 21.874 10.3743C21.089 5.54565 16.9181 1.99888 12.026 2Z"
+                    ></path>
+                  </svg>
+                </a>
+              </div>
+            </div>
+
+            <div
+              class="flex flex-col items-center p-8 transition-colors duration-300 transform border cursor-pointer rounded-xl hover:border-transparent group hover:bg-white/60 dark:border-gray-700 dark:hover:border-transparent"
+            >
+              <img
+                class="object-cover w-32 h-32 rounded-full ring-4 ring-gray-300"
+                src="https://images.unsplash.com/photo-1488508872907-592763824245?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80"
+                alt=""
+              />
+
+              <h1
+                class="mt-4 text-2xl font-semibold capitalize text-white group-hover:text-black"
+              >
+                Haikal Jibran A.
+              </h1>
+
+              <p class="mt-2 text-white capitalize group-hover:text-black">
+                Future Full-Stack Developer
+              </p>
+
+              <div class="flex mt-3 -mx-2">
+                <a
+                  href="#"
+                  class="mx-2 text-gray-600 dark:text-gray-300 hover:text-gray-500 dark:hover:text-gray-300 group-hover:text-white"
+                  aria-label="Reddit"
+                >
+                  <svg
+                    class="w-6 h-6 fill-current"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12C21.9939 17.5203 17.5203 21.9939 12 22ZM6.807 10.543C6.20862 10.5433 5.67102 10.9088 5.45054 11.465C5.23006 12.0213 5.37133 12.6558 5.807 13.066C5.92217 13.1751 6.05463 13.2643 6.199 13.33C6.18644 13.4761 6.18644 13.6229 6.199 13.769C6.199 16.009 8.814 17.831 12.028 17.831C15.242 17.831 17.858 16.009 17.858 13.769C17.8696 13.6229 17.8696 13.4761 17.858 13.33C18.4649 13.0351 18.786 12.3585 18.6305 11.7019C18.475 11.0453 17.8847 10.5844 17.21 10.593H17.157C16.7988 10.6062 16.458 10.7512 16.2 11C15.0625 10.2265 13.7252 9.79927 12.35 9.77L13 6.65L15.138 7.1C15.1931 7.60706 15.621 7.99141 16.131 7.992C16.1674 7.99196 16.2038 7.98995 16.24 7.986C16.7702 7.93278 17.1655 7.47314 17.1389 6.94094C17.1122 6.40873 16.6729 5.991 16.14 5.991C16.1022 5.99191 16.0645 5.99491 16.027 6C15.71 6.03367 15.4281 6.21641 15.268 6.492L12.82 6C12.7983 5.99535 12.7762 5.993 12.754 5.993C12.6094 5.99472 12.4851 6.09583 12.454 6.237L11.706 9.71C10.3138 9.7297 8.95795 10.157 7.806 10.939C7.53601 10.6839 7.17843 10.5422 6.807 10.543ZM12.18 16.524C12.124 16.524 12.067 16.524 12.011 16.524C11.955 16.524 11.898 16.524 11.842 16.524C11.0121 16.5208 10.2054 16.2497 9.542 15.751C9.49626 15.6958 9.47445 15.6246 9.4814 15.5533C9.48834 15.482 9.52348 15.4163 9.579 15.371C9.62737 15.3318 9.68771 15.3102 9.75 15.31C9.81233 15.31 9.87275 15.3315 9.921 15.371C10.4816 15.7818 11.159 16.0022 11.854 16C11.9027 16 11.9513 16 12 16C12.059 16 12.119 16 12.178 16C12.864 16.0011 13.5329 15.7863 14.09 15.386C14.1427 15.3322 14.2147 15.302 14.29 15.302C14.3653 15.302 14.4373 15.3322 14.49 15.386C14.5985 15.4981 14.5962 15.6767 14.485 15.786V15.746C13.8213 16.2481 13.0123 16.5208 12.18 16.523V16.524ZM14.307 14.08H14.291L14.299 14.041C13.8591 14.011 13.4994 13.6789 13.4343 13.2429C13.3691 12.8068 13.6162 12.3842 14.028 12.2269C14.4399 12.0697 14.9058 12.2202 15.1478 12.5887C15.3899 12.9572 15.3429 13.4445 15.035 13.76C14.856 13.9554 14.6059 14.0707 14.341 14.08H14.306H14.307ZM9.67 14C9.11772 14 8.67 13.5523 8.67 13C8.67 12.4477 9.11772 12 9.67 12C10.2223 12 10.67 12.4477 10.67 13C10.67 13.5523 10.2223 14 9.67 14Z"
+                    ></path>
+                  </svg>
+                </a>
+
+                <a
+                  href="#"
+                  class="mx-2 text-gray-600 dark:text-gray-300 hover:text-gray-500 dark:hover:text-gray-300 group-hover:text-white"
+                  aria-label="Facebook"
+                >
+                  <svg
+                    class="w-6 h-6 fill-current"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M2.00195 12.002C2.00312 16.9214 5.58036 21.1101 10.439 21.881V14.892H7.90195V12.002H10.442V9.80204C10.3284 8.75958 10.6845 7.72064 11.4136 6.96698C12.1427 6.21332 13.1693 5.82306 14.215 5.90204C14.9655 5.91417 15.7141 5.98101 16.455 6.10205V8.56104H15.191C14.7558 8.50405 14.3183 8.64777 14.0017 8.95171C13.6851 9.25566 13.5237 9.68693 13.563 10.124V12.002H16.334L15.891 14.893H13.563V21.881C18.8174 21.0506 22.502 16.2518 21.9475 10.9611C21.3929 5.67041 16.7932 1.73997 11.4808 2.01722C6.16831 2.29447 2.0028 6.68235 2.00195 12.002Z"
+                    ></path>
+                  </svg>
+                </a>
+
+                <a
+                  href="#"
+                  class="mx-2 text-gray-600 dark:text-gray-300 hover:text-gray-500 dark:hover:text-gray-300 group-hover:text-white"
+                  aria-label="Github"
+                >
+                  <svg
+                    class="w-6 h-6 fill-current"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M12.026 2C7.13295 1.99937 2.96183 5.54799 2.17842 10.3779C1.395 15.2079 4.23061 19.893 8.87302 21.439C9.37302 21.529 9.55202 21.222 9.55202 20.958C9.55202 20.721 9.54402 20.093 9.54102 19.258C6.76602 19.858 6.18002 17.92 6.18002 17.92C5.99733 17.317 5.60459 16.7993 5.07302 16.461C4.17302 15.842 5.14202 15.856 5.14202 15.856C5.78269 15.9438 6.34657 16.3235 6.66902 16.884C6.94195 17.3803 7.40177 17.747 7.94632 17.9026C8.49087 18.0583 9.07503 17.99 9.56902 17.713C9.61544 17.207 9.84055 16.7341 10.204 16.379C7.99002 16.128 5.66202 15.272 5.66202 11.449C5.64973 10.4602 6.01691 9.5043 6.68802 8.778C6.38437 7.91731 6.42013 6.97325 6.78802 6.138C6.78802 6.138 7.62502 5.869 9.53002 7.159C11.1639 6.71101 12.8882 6.71101 14.522 7.159C16.428 5.868 17.264 6.138 17.264 6.138C17.6336 6.97286 17.6694 7.91757 17.364 8.778C18.0376 9.50423 18.4045 10.4626 18.388 11.453C18.388 15.286 16.058 16.128 13.836 16.375C14.3153 16.8651 14.5612 17.5373 14.511 18.221C14.511 19.555 14.499 20.631 14.499 20.958C14.499 21.225 14.677 21.535 15.186 21.437C19.8265 19.8884 22.6591 15.203 21.874 10.3743C21.089 5.54565 16.9181 1.99888 12.026 2Z"
+                    ></path>
+                  </svg>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="features" class>
       <div class="container px-6 py-10 mx-auto">
-        <h1
-          class="text-2xl font-semibold text-gray-800 capitalize lg:text-3xl dark:text-white"
-        >
-          explore our <br />
-          awesome <span class="underline decoration-blue-500">Components</span>
+        <h1 class="text-2xl font-semibold capitalize lg:text-3xl text-white">
+          explore exciting <br />
+          <span class="underline decoration-blue-500">Virtual Realities</span>
         </h1>
 
-        <p class="mt-4 text-gray-500 xl:mt-6 dark:text-gray-300">
+        <p class="mt-4 text-white xl:mt-6">
           Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nostrum quam
           voluptatibus
         </p>
@@ -521,44 +703,24 @@
           <div
             class="p-8 space-y-3 border-2 border-blue-400 dark:border-blue-300 rounded-xl"
           >
-            <span class="inline-block text-[#CF32D2] dark:text-blue-400">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="w-8 h-8"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z"
-                />
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M9.879 16.121A3 3 0 1012.015 11L11 14H9c0 .768.293 1.536.879 2.121z"
-                />
-              </svg>
-            </span>
-
+            <img
+              src="assets/images/explore/Explore-Virtual-Reality.svg"
+              alt="Feature 1"
+              class="h-64 w-full object-cover rounded-lg"
+            />
             <h1
-              class="text-xl font-semibold text-gray-700 capitalize dark:text-white"
+              class="text-xl font-semibold text-white capitalize dark:text-white"
             >
-              elegant Dark Mode
+              Virtual Reality
             </h1>
-
-            <p class="text-gray-500 dark:text-gray-300">
+            <p class="text-white">
               Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident
               ab nulla quod dignissimos vel non corrupti doloribus voluptatum
               eveniet
             </p>
-
             <a
               href="#"
-              class="inline-flex p-2 text-[#CF32D2] capitalize transition-colors duration-300 transform bg-blue-100 rounded-full rtl:-scale-x-100 dark:bg-blue-500 dark:text-white hover:underline hover:text-blue-600 dark:hover:text-[#CF32D2]"
+              class="inline-flex p-2 text-indigo-700 capitalize transition-colors duration-300 transform bg-blue-100 rounded-full rtl:-scale-x-100 dark:bg-blue-500 dark:text-white hover:underline hover:text-blue-600 dark:hover:text-indigo-700"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -580,38 +742,24 @@
           <div
             class="p-8 space-y-3 border-2 border-blue-400 dark:border-blue-300 rounded-xl"
           >
-            <span class="inline-block text-[#CF32D2] dark:text-blue-400">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="w-8 h-8"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z"
-                />
-              </svg>
-            </span>
-
+            <img
+              src="assets/images/explore/Explore-Augmanted-Reality.svg"
+              alt="Feature 2"
+              class="h-64 w-full object-cover rounded-lg"
+            />
             <h1
-              class="text-xl font-semibold text-gray-700 capitalize dark:text-white"
+              class="text-xl font-semibold text-white capitalize dark:text-white"
             >
-              Easy to customiztions
+              Augmented Reality
             </h1>
-
-            <p class="text-gray-500 dark:text-gray-300">
+            <p class="text-white">
               Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident
               ab nulla quod dignissimos vel non corrupti doloribus voluptatum
               eveniet
             </p>
-
             <a
               href="#"
-              class="inline-flex p-2 text-[#CF32D2] capitalize transition-colors duration-300 transform bg-blue-100 rounded-full rtl:-scale-x-100 dark:bg-blue-500 dark:text-white hover:underline hover:text-blue-600 dark:hover:text-[#CF32D2]"
+              class="inline-flex p-2 text-indigo-700 capitalize transition-colors duration-300 transform bg-blue-100 rounded-full rtl:-scale-x-100 dark:bg-blue-500 dark:text-white hover:underline hover:text-blue-600 dark:hover:text-indigo-700"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -633,38 +781,24 @@
           <div
             class="p-8 space-y-3 border-2 border-blue-400 dark:border-blue-300 rounded-xl"
           >
-            <span class="inline-block text-[#CF32D2] dark:text-blue-400">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="w-8 h-8"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"
-                />
-              </svg>
-            </span>
-
+            <img
+              src="assets/images/explore/Explore-Mixed-Reality.svg"
+              alt="Feature 3"
+              class="h-64 w-full object-cover rounded-lg"
+            />
             <h1
-              class="text-xl font-semibold text-gray-700 capitalize dark:text-white"
+              class="text-xl font-semibold text-white capitalize dark:text-white"
             >
-              Simple & clean designs
+              Mixed Reality
             </h1>
-
-            <p class="text-gray-500 dark:text-gray-300">
+            <p class="text-white">
               Lorem ipsum dolor sit amet consectetur adipisicing elit. Provident
               ab nulla quod dignissimos vel non corrupti doloribus voluptatum
               eveniet
             </p>
-
             <a
               href="#"
-              class="inline-flex p-2 text-[#CF32D2] capitalize transition-colors duration-300 transform bg-blue-100 rounded-full rtl:-scale-x-100 dark:bg-blue-500 dark:text-white hover:underline hover:text-blue-600 dark:hover:text-[#CF32D2]"
+              class="inline-flex p-2 text-indigo-700 capitalize transition-colors duration-300 transform bg-blue-100 rounded-full rtl:-scale-x-100 dark:bg-blue-500 dark:text-white hover:underline hover:text-blue-600 dark:hover:text-indigo-700"
             >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -687,30 +821,64 @@
     </section>
 
     <script>
-      // This is just to ensure Alpine.js works correctly
       document.addEventListener("alpine:init", () => {
-        Alpine.data("scrollEffect", () => ({
+        Alpine.data("heroSection", () => ({
           scrolled: false,
+          activeSection: "hero",
+          isMenuOpen: false,
+          navItems: [
+            { section: "hero", label: "Home" },
+            { section: "about", label: "About" },
+            { section: "features", label: "Features" },
+            { section: "articles", label: "Articles" },
+            { section: "gallery", label: "Gallery" },
+            { section: "contact", label: "Contact" },
+          ],
+          init() {
+            this.checkScroll();
+          },
           checkScroll() {
             this.scrolled = window.scrollY > 50;
+            this.updateActiveSection();
+          },
+          updateActiveSection() {
+            const sections = this.navItems.map((item) => item.section);
+            for (let section of sections) {
+              const el = document.getElementById(section);
+              if (el) {
+                const rect = el.getBoundingClientRect();
+                if (
+                  rect.top <= window.innerHeight / 2 &&
+                  rect.bottom >= window.innerHeight / 2
+                ) {
+                  this.activeSection = section;
+                  break;
+                }
+              }
+            }
+          },
+        }));
+
+        Alpine.data("typingText", (text, speed = 150) => ({
+          fullText: text,
+          displayText: "",
+          isTyping: true,
+          startTyping() {
+            const chars = this.fullText.split("");
+            let index = 0;
+            const typeNext = () => {
+              if (index < chars.length) {
+                this.displayText += chars[index];
+                index++;
+                setTimeout(typeNext, speed);
+              } else {
+                this.isTyping = false;
+              }
+            };
+            typeNext();
           },
         }));
       });
     </script>
-
-    <style>
-      @keyframes blink {
-        0%,
-        100% {
-          opacity: 0;
-        }
-        50% {
-          opacity: 1;
-        }
-      }
-      .animate-blink {
-        animation: blink 0.7s infinite;
-      }
-    </style>
   </body>
 </html>
