@@ -63,6 +63,24 @@ html {
   scroll-behavior: smooth;
 }
 
+section {
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
+
 .font-orbitron {
   font-family: "Orbitron", sans-serif;
+}
+
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+.animate-blink {
+  animation: blink 0.7s infinite;
 }
